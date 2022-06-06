@@ -6,7 +6,7 @@ data class BaseResponse<T>(
     @SerializedName("response") val data: T?,
     @SerializedName("meta") val meta: Meta?,
 ) {
-    fun getResponseErrorCode() = meta?.code.toString() ?: ""
+    fun getResponseErrorCode() = meta?.code.toString()
 
     fun getResponseErrorMessage() =
         meta?.errorDetail ?: ""
