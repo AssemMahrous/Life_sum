@@ -45,7 +45,7 @@ data class LogException(
 ) : RuntimeException(message, cause) {
     companion object {
         @JvmStatic
-        fun log(message: String) = Timber.e(LogException("LuckyCustom: $message"))
+        fun log(message: String) = Timber.e(LogException("Custom: $message"))
     }
 }
 

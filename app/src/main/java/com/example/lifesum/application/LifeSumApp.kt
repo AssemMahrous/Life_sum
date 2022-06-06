@@ -1,5 +1,6 @@
 package com.example.lifesum.application
 
+import androidx.appcompat.app.AppCompatDelegate
 import com.example.authentication.interceptor.TokenInterceptor
 import com.example.base.BaseApplication
 import com.example.lifesum.BuildConfig
@@ -24,6 +25,7 @@ class LifeSumApp : BaseApplication() {
     override fun onCreate() {
         FeaturesKoinModules.init()
         super.onCreate()
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
     }
 
 }

@@ -1,4 +1,4 @@
-package com.dsquares.lucky.basemodule.base.platform
+package com.example.base.platform
 
 import android.app.Activity
 import android.os.Bundle
@@ -13,20 +13,18 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 
-import com.example.base.platform.BaseViewModel
-import com.example.base.platform.IBaseView
-import com.example.base.platform.LoadingHandler
-import org.koin.androidx.viewmodel.ViewModelOwner
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.android.ext.android.getKoin
+import org.koin.androidx.viewmodel.koin.getViewModel
 import java.lang.ref.WeakReference
 
 abstract class BaseFragment<ViewModel : BaseViewModel> : Fragment(), IBaseView<ViewModel> {
     val navController: NavController by lazy { findNavController() }
 
     override val viewModel: ViewModel by lazy {
-        getViewModel(
-            clazz = viewModelClass(),
-            owner = { ViewModelOwner.from(getViewModelStoreOwner()) })
+        getKoin().getViewModel(
+            owner = getViewModelStoreOwner(),
+            clazz = viewModelClass()
+        )
     }
 
     override val sharedViewModels = mutableListOf<WeakReference<BaseViewModel>>()

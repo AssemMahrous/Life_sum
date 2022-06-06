@@ -3,7 +3,6 @@ package com.example.base.di
 import com.example.base.utils.CustomHttpLoggingInterceptor
 import com.google.gson.Gson
 import com.moczul.ok2curl.CurlInterceptor
-import okhttp3.Authenticator
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import org.koin.core.module.Module
@@ -28,7 +27,7 @@ object NetworkModule {
         this.module = module {
             single(named(QUALIFIER_BASE_URL)) { baseUrl }
             single { interceptors }
-            single { provideOkHttp(get(), get()) }
+            single { provideOkHttp(get()) }
             single { provideRetrofit(get(named(QUALIFIER_BASE_URL)), get(), get()) }
         }
     }
@@ -45,7 +44,6 @@ object NetworkModule {
 
     private fun provideOkHttp(
         interceptors: List<Interceptor>,
-        authenticator: Authenticator,
     ): OkHttpClient {
         val logging = CustomHttpLoggingInterceptor(
             object :
@@ -70,7 +68,6 @@ object NetworkModule {
             .connectTimeout(timeout, TimeUnit.SECONDS)
             .callTimeout(timeout, TimeUnit.SECONDS)
             .addNetworkInterceptor(logging)
-            .authenticator(authenticator)
 
         //enabled here in all cases if this code to be shipped should add condition for removal
         okHttpClientBuilder

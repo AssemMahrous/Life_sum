@@ -1,7 +1,5 @@
 package com.example.authentication.interceptor
 
-import com.example.authentication.APIS.Headers.KEY_AUTHORIZATION
-import com.example.authentication.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -17,6 +15,7 @@ class TokenInterceptor : Interceptor {
     }
 
     private fun appendAuthHeader(builder: Request.Builder) = builder.apply {
-        addHeader(KEY_AUTHORIZATION, BuildConfig.AUTH_TOKEN)
+        //Removed auth due to unauthorized error
+//        addHeader(KEY_AUTHORIZATION, BuildConfig.AUTH_TOKEN)
     }.build()
 }

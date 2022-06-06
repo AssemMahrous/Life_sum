@@ -11,6 +11,10 @@ object KoinMainModules {
         interceptors: List<Interceptor>,
     ): ArrayList<Module> {
 
+        // serialization module
+        SerializationModule.init()
+        moduleList.add(SerializationModule.module)
+
         // remote data source module
         NetworkModule.init(baseUrl, interceptors)
         moduleList.add(NetworkModule.module)

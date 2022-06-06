@@ -8,17 +8,19 @@ import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleOwner
 import com.example.base.common.LocaleHelper
-import org.koin.androidx.viewmodel.ViewModelOwner
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.android.ext.android.getKoin
+import org.koin.androidx.viewmodel.koin.getViewModel
 import java.lang.ref.WeakReference
 
 abstract class BaseActivity<ViewModel : BaseViewModel> : AppCompatActivity(), IBaseView<ViewModel> {
 
     override val viewModel: ViewModel by lazy {
-        getViewModel(
-            clazz = viewModelClass(),
-            owner = { ViewModelOwner.from(getViewModelStoreOwner()) })
+        getKoin().getViewModel(
+            owner = getViewModelStoreOwner(),
+            clazz = viewModelClass()
+        )
     }
+
 
     override val sharedViewModels = mutableListOf<WeakReference<BaseViewModel>>()
 

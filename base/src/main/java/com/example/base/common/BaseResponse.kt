@@ -3,16 +3,17 @@ package com.example.base.common
 import com.google.gson.annotations.SerializedName
 
 data class BaseResponse<T>(
-    @SerializedName("Status") val status: Int,
-    @SerializedName("Data") val data: T?,
-    @SerializedName("Errors") val errors: List<String>?,
-    @SerializedName("ErrorCode") val errorCode: String?,
-    @SerializedName("statusCode") val statusCode: Int,
-    @SerializedName("message") val message: String?,
-    @SerializedName("error") val error: String?,
+    @SerializedName("response") val data: T?,
+    @SerializedName("meta") val meta: Meta?,
 ) {
-    fun getResponseErrorCode() = errorCode ?: statusCode.toString()
+    fun getResponseErrorCode() = meta?.code.toString() ?: ""
 
     fun getResponseErrorMessage() =
-        errors?.joinToString(separator = "\n") ?: error ?: message.toString()
+        meta?.errorDetail ?: ""
 }
+
+data class Meta(
+    @SerializedName("code") val code: Int,
+    @SerializedName("errorType") val errorType: String? = null,
+    @SerializedName("errorDetail") val errorDetail: String? = null,
+)

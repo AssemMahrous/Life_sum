@@ -1,15 +1,17 @@
 package com.example.base.utils
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import android.view.View
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import org.koin.core.qualifier.Qualifier
+import java.text.SimpleDateFormat
+import java.util.*
 
+private val sdfWithSeconds = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH)
+    .apply { timeZone = TimeZone.getTimeZone("UTC") }
 
-fun <T> MutableLiveData<T>.toLiveData(): LiveData<T> = this
+private val sdfWithoutSeconds = SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.ENGLISH)
+    .apply { timeZone = TimeZone.getTimeZone("UTC") }
 
 inline fun <reified T : Any> getKoinInstance(qualifier: Qualifier? = null): Lazy<T> {
     return lazy {
@@ -18,31 +20,6 @@ inline fun <reified T : Any> getKoinInstance(qualifier: Qualifier? = null): Lazy
         }.value
     }
 }
-
-
-inline fun <reified T> dependantLiveData(
-    vararg dependencies: LiveData<out Any>,
-    defaultValue: T? = null,
-    crossinline mapper: () -> T?,
-): MutableLiveData<T> =
-    MediatorLiveData<T>().also { mediatorLiveData ->
-        val observer = Observer<Any> { mediatorLiveData.value = mapper() }
-        dependencies.forEach { dependencyLiveData ->
-            mediatorLiveData.addSource(dependencyLiveData, observer)
-        }
-    }.apply { value = defaultValue }
-
-inline fun <reified T, reified R> dependantLiveDataWithHandler(
-    vararg dependencies: LiveData<out R>,
-    defaultValue: T? = null,
-    crossinline handler: (MediatorLiveData<T>, R) -> Unit,
-): MutableLiveData<T> =
-    MediatorLiveData<T>().also { mediatorLiveData ->
-        val observer = Observer<R> { handler(mediatorLiveData, it) }
-        dependencies.onEach {
-            mediatorLiveData.addSource(it, observer)
-        }
-    }.apply { value = defaultValue }
 
 val <T> T.exhaustive: T get() = this
 
@@ -53,4 +30,30 @@ fun List<ApplicationMessage.MessageAction>.getActions()
     val negativeAction = firstOrNull { it is ApplicationMessage.MessageAction.Negative }
     val neutralAction = firstOrNull { it is ApplicationMessage.MessageAction.Neutral }
     return Triple(positiveAction, negativeAction, neutralAction)
+}
+
+fun Date?.toStringFormat(): String? {
+    return when {
+        this != null -> sdfWithSeconds.format(this)
+        else -> null
+    }
+}
+
+fun String?.toDate(): Date? {
+    return when {
+        !this.isNullOrEmpty() -> try {
+            sdfWithSeconds.parse(this)
+        } catch (e: Exception) {
+            sdfWithoutSeconds.parse(this)
+        }
+        else -> Date()
+    }
+}
+
+fun View.show() {
+    visibility = View.VISIBLE
+}
+
+fun View.hide() {
+    visibility = View.GONE
 }
